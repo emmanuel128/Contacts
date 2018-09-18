@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage Title="Contacts"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Contacts"
+             x:Class="Contacts.MainPage">
+    <!--<SearchBar Placeholder="Search..."></SearchBar>-->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Clicked="Add_Clicked"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ListView x:Name="contactsList" ItemSelected="ContactsList_ItemSelected">
+        <ListView.ItemTemplate >
+            <DataTemplate>
+                <TextCell Text="{Binding FullName}" Detail="{Binding Status}">
+                    <TextCell.ContextActions>
+                        <MenuItem IsDestructive="True" Text="Delete" Clicked="Delete_Clicked" CommandParameter="{Binding .}"/>
+                    </TextCell.ContextActions>
+                </TextCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+
+</ContentPage>
