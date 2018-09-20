@@ -4,33 +4,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Contacts.Serializers;
 using System.Collections.ObjectModel;
+using Contacts.Models;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace Contacts
 {
 	public partial class MainPage : ContentPage
 	{
-        public ObservableCollection<Contact> _contacts;
+        private string url = (App.Current as App).url;
+        private ObservableCollection<Customer> _customers;
+        private HttpClient client = new HttpClient();
+
 		public MainPage()
 		{
 			InitializeComponent();
-            _contacts = new ObservableCollection<Contact>()
-            {
-                new Contact {Id = 1, Email = "test1@test.com", FirstName="First Name 1", LastName="Last Name 1", IsBlocked = false, Phone = "787-787-7878", Status="Status 1" },
-                new Contact {Id = 2, Email = "test2@test.com", FirstName="First Name 2", LastName="Last Name 2", IsBlocked = true, Phone = "787-787-7878", Status="Status 1" }
-            };
-            contactsList.ItemsSource = _contacts;
         }
 
-        async private void ContactsList_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        protected override async void OnAppearing()
+        {
+            var content = await client.GetStringAsync(url);
+            List<Customer> posts = JsonConvert.DeserializeObject<List<Customer>>(content);
+            customerList.ItemsSource = _customers;
+            base.OnAppearing();
+        }
+        async private void CustomerList_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             if (e.SelectedItem == null)
                 return;
 
-            var selectedContact = e.SelectedItem as Contact;
-            contactsList.SelectedItem = null;
-
+            var selectedContact = e.SelectedItem as Customer;
+            customerList.SelectedItem = null;
+            /*
             var page = new Details(selectedContact);
             page.ContactUpdated += (source, contact) =>
             {
@@ -40,7 +46,7 @@ namespace Contacts
                 // properties. If working with a larger class, you may want 
                 // to look at AutoMapper, which is a convention-based mapping
                 // tool. 
-                var item = _contacts.FirstOrDefault(f => f.Id == contact.Id);
+                var item = _customers.FirstOrDefault(f => f.Id == contact.Id);
                 if(item != null)
                 {
                     item.Id = contact.Id;
@@ -53,10 +59,12 @@ namespace Contacts
             };
 
             await Navigation.PushAsync(new Details(selectedContact));
+            */
         }
 
         async private void Add_Clicked(object sender, EventArgs e)
         {
+            /*
             var page = new Details(new Contact());
 
             // We can subscribe to the ContactAdded event using a lambda expression.
@@ -66,16 +74,17 @@ namespace Contacts
                 // ContactAdded event is raised when the user taps the Done button.
                 // Here, we get notified and add this contact to our 
                 // ObservableCollection.
-                _contacts.Add(contact);
+                _customers.Add(contact);
             };
             await Navigation.PushAsync(new Details(new Contact()));
+            */
         }
 
         async private void Delete_Clicked(object sender, EventArgs e)
         {
-            var contact = (sender as MenuItem).CommandParameter as Contact;
-            if (await DisplayAlert("Warning", $"Are you sure you want to delete {contact.FullName}?", "Yes", "No"))
-                _contacts.Remove(contact);
+            var customer = (sender as MenuItem).CommandParameter as Customer;
+            if (await DisplayAlert("Warning", $"Are you sure you want to delete {customer.FullName}?", "Yes", "No"))
+                _customers.Remove(customer);
         }
     }
 }

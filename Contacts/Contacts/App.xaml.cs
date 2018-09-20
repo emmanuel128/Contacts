@@ -9,7 +9,9 @@ namespace Contacts
 {
 	public partial class App : Application
 	{
-		public App ()
+        public string url = "https://nodecustumers.herokuapp.com/api";
+
+        public App ()
 		{
 			InitializeComponent();
 

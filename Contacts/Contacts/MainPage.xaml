@@ -8,10 +8,10 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Clicked="Add_Clicked"></ToolbarItem>
     </ContentPage.ToolbarItems>
-    <ListView x:Name="contactsList" ItemSelected="ContactsList_ItemSelected">
+    <ListView x:Name="customerList" ItemSelected="CustomerList_ItemSelected">
         <ListView.ItemTemplate >
             <DataTemplate>
-                <TextCell Text="{Binding FullName}" Detail="{Binding Status}">
+                <TextCell Text="{Binding FullName}">
                     <TextCell.ContextActions>
                         <MenuItem IsDestructive="True" Text="Delete" Clicked="Delete_Clicked" CommandParameter="{Binding .}"/>
                     </TextCell.ContextActions>
