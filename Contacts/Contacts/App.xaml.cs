@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Contacts.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,12 @@ namespace Contacts
 	public partial class App : Application
 	{
         public string url = "https://nodecustumers.herokuapp.com/api";
+        public static CustomerManager CustomerManager { get; private set; }
 
         public App ()
 		{
 			InitializeComponent();
-
+            CustomerManager = new CustomerManager(new RestService());
             MainPage = new NavigationPage(new Contacts.MainPage());
 		}
 

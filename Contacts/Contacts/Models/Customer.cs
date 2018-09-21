@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Contacts.Models
 {
-    class Customer
+    public class Customer
     {
-        public int _id { get; set; }
+        public string _id { get; set; }
         public string FirstName { get; set; }
         public string Initial { get; set; }
         public string LastName { get; set; }

@@ -24,11 +24,12 @@ namespace Contacts
 
         protected override async void OnAppearing()
         {
-            var content = await client.GetStringAsync(url);
-            List<Customer> posts = JsonConvert.DeserializeObject<List<Customer>>(content);
-            customerList.ItemsSource = _customers;
             base.OnAppearing();
+            _customers = new ObservableCollection<Customer>(await App.CustomerManager.GetTasksAsync());
+            customerList.ItemsSource = _customers;
+            await DisplayAlert("Acabó", $"Ya llamé al API y este es el primer récord {_customers[0].FullName}", "OK");
         }
+
         async private void CustomerList_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             if (e.SelectedItem == null)
