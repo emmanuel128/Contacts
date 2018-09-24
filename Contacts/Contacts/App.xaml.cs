@@ -10,17 +10,16 @@ namespace Contacts
 {
 	public partial class App : Application
 	{
-        public string url = "https://nodecustumers.herokuapp.com/api";
         public static CustomerManager CustomerManager { get; private set; }
 
         public App ()
 		{
 			InitializeComponent();
             CustomerManager = new CustomerManager(new RestService());
-            MainPage = new NavigationPage(new Contacts.MainPage());
-		}
+            MainPage = new NavigationPage(new MainPage());
+        }
 
-		protected override void OnStart ()
+        protected override void OnStart ()
 		{
 			// Handle when your app starts
 		}

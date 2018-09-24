@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -16,8 +17,9 @@ namespace Contacts.Data
 		HttpClient client;
 
 		public List<Customer> Customers { get; private set; }
+		public Customer Customer { get; private set; }
 
-		public RestService ()
+        public RestService ()
 		{
 			client = new HttpClient ();
 		}
@@ -41,7 +43,30 @@ namespace Contacts.Data
 			return Customers;
 		}
 
-		public async Task SaveTodoItemAsync (Customer item, bool isNewItem = false)
+        public async Task<Customer> GetCustomerById(string customerId)
+        {
+            Customer = new Customer();
+
+            var uri = new Uri(string.Format(Constants.RestUrl, customerId));
+
+            try
+            {
+                var response = await client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    Customer = JsonConvert.DeserializeObject<Customer>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"ERROR {0}", ex.Message);
+            }
+
+            return Customer;
+        }
+
+        public async Task<HttpResponseMessage> SaveCustomerAsync (Customer item, bool isNewItem = false)
 		{
 			// RestUrl = http://developer.xamarin.com:8081/api/todoitems
 			var uri = new Uri (string.Format (Constants.RestUrl, string.Empty));
@@ -54,19 +79,23 @@ namespace Contacts.Data
 				if (isNewItem) {
 					response = await client.PostAsync (uri, content);
 				} else {
-					response = await client.PutAsync (uri, content);
+                    uri = new Uri(string.Format(Constants.RestUrl, item.CustomerID));
+                    response = await client.PutAsync (uri, content);
 				}
 				
 				if (response.IsSuccessStatusCode) {
 					Debug.WriteLine (@"				TodoItem successfully saved.");
 				}
+
+                return response;
 				
 			} catch (Exception ex) {
 				Debug.WriteLine (@"				ERROR {0}", ex.Message);
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
 			}
 		}
 
-		public async Task DeleteTodoItemAsync (string id)
+		public async Task<HttpResponseMessage> DeleteTodoItemAsync (string id)
 		{
 			// RestUrl = http://developer.xamarin.com:8081/api/todoitems/{0}
 			var uri = new Uri (string.Format (Constants.RestUrl, id));
@@ -77,10 +106,11 @@ namespace Contacts.Data
 				if (response.IsSuccessStatusCode) {
 					Debug.WriteLine (@"				TodoItem successfully deleted.");	
 				}
-				
+                return response;
 			} catch (Exception ex) {
 				Debug.WriteLine (@"				ERROR {0}", ex.Message);
-			}
-		}
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            }
+        }
 	}
 }

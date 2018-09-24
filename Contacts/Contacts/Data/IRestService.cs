@@ -1,5 +1,6 @@
 ﻿using Contacts.Models;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Contacts.Data
@@ -8,8 +9,10 @@ namespace Contacts.Data
 	{
 		Task<List<Customer>> RefreshDataAsync ();
 
-		Task SaveTodoItemAsync (Customer item, bool isNewItem);
+		Task<Customer> GetCustomerById (string customerId);
 
-		Task DeleteTodoItemAsync (string id);
+        Task<HttpResponseMessage> SaveCustomerAsync (Customer customer, bool isNewItem);
+
+		Task<HttpResponseMessage> DeleteTodoItemAsync (string id);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Contacts.Models;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Contacts.Data
@@ -19,12 +20,17 @@ namespace Contacts.Data
 			return restService.RefreshDataAsync ();	
 		}
 
-		public Task SaveTaskAsync (Customer customer, bool isNewItem = false)
+        public Task<Customer> GetByIdTaskAsync(string id)
+        {
+            return restService.GetCustomerById(id);
+        }
+
+        public Task<HttpResponseMessage> SaveTaskAsync (Customer customer, bool isNewItem = false)
 		{
-			return restService.SaveTodoItemAsync (customer, isNewItem);
+			return restService.SaveCustomerAsync (customer, isNewItem);
 		}
 
-		public Task DeleteTaskAsync (Customer customer)
+		public Task<HttpResponseMessage> DeleteTaskAsync (Customer customer)
 		{
 			return restService.DeleteTodoItemAsync (customer.CustomerID);
 		}
