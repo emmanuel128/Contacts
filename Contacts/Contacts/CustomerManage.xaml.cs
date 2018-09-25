@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Contacts.Interfaces;
+using Acr.UserDialogs;
 
 namespace Contacts
 {
@@ -16,6 +17,7 @@ namespace Contacts
 	public partial class CustomerManage : ContentPage
 	{
         private string customerId = string.Empty;
+        private string title = "New Customer";
 
 		public CustomerManage (Customer customer)
 		{
@@ -27,6 +29,7 @@ namespace Contacts
             else
             {
                 BindingContext = new Customer();
+                title = "New Customer";
                 deleteBtn.IsVisible = false;
             }
         }
@@ -36,8 +39,12 @@ namespace Contacts
             base.OnAppearing();
             if (!string.IsNullOrWhiteSpace(customerId))
             {
-                var _customer = await App.CustomerManager.GetByIdTaskAsync(customerId);
-                BindingContext = _customer;
+                using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Gradient))
+                {
+                    var _customer = await App.CustomerManager.GetByIdTaskAsync(customerId);
+                    BindingContext = _customer;
+                    title = _customer.FullName;
+                }
                 //await DisplayAlert("Acabó", $"Ya llamé al API y este es el primer récord {_customer.FullName}", "OK");
             }
         }
@@ -45,32 +52,41 @@ namespace Contacts
         private async void SaveBtn_Pressed(object sender, EventArgs e)
         {
             var _customer = BindingContext as Customer;
-            var response = await App.CustomerManager.SaveTaskAsync(_customer, string.IsNullOrWhiteSpace(customerId));
-            if(response.StatusCode == HttpStatusCode.OK)
+            using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Gradient))
             {
-                // success
-                DependencyService.Get<IMessage>().ShortAlert("Customer Updated");
-                await Navigation.PopAsync();
-            }
-            else
-            {
-                await DisplayAlert("Error", await response.Content.ReadAsStringAsync(), "OK");
+                var response = await App.CustomerManager.SaveTaskAsync(_customer, string.IsNullOrWhiteSpace(customerId));
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    // success
+                    DependencyService.Get<IMessage>().ShortAlert("Customer Updated");
+                    await Navigation.PopAsync();
+                }
+                else
+                {
+                    await DisplayAlert("Error", await response.Content.ReadAsStringAsync(), "OK");
+                }
             }
         }
 
         private async void DeleteBtn_Pressed(object sender, EventArgs e)
         {
             var _c = BindingContext as Customer;
-            var response = await App.CustomerManager.DeleteTaskAsync(BindingContext as Customer);
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (await DisplayAlert("Warning", $"Are you sure you want to delete {_c.FullName}?", "Yes", "No"))
             {
-                // success
-                DependencyService.Get<IMessage>().ShortAlert("Customer Deleted");
-                await Navigation.PopAsync();
-            }
-            else
-            {
-                await DisplayAlert("Error", await response.Content.ReadAsStringAsync(), "OK");
+                using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Gradient))
+                {
+                    var response = await App.CustomerManager.DeleteTaskAsync(BindingContext as Customer);
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        // success
+                        DependencyService.Get<IMessage>().ShortAlert("Customer Deleted");
+                        await Navigation.PopAsync();
+                    }
+                    else
+                    {
+                        await DisplayAlert("Error", await response.Content.ReadAsStringAsync(), "OK");
+                    }
+                }
             }
         }
     }

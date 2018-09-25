@@ -10,6 +10,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net;
 using Contacts.Interfaces;
+using Acr.UserDialogs;
 
 namespace Contacts
 {
@@ -25,7 +26,21 @@ namespace Contacts
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            _customers = new ObservableCollection<Customer>(await App.CustomerManager.GetTasksAsync());
+            using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Gradient))
+            {
+                _customers = new ObservableCollection<Customer>(await App.CustomerManager.GetTasksAsync());
+                var config = new ToastConfig("Finished")
+                {
+                    Duration = TimeSpan.FromSeconds(2.5),
+                    Message = "Get customers",
+                    BackgroundColor = Color.DimGray
+                };
+                UserDialogs.Instance.Toast(config);
+                //var date = await UserDialogs.Instance.DatePromptAsync(new DatePromptConfig() { Title = "Select Date", CancelText = "Cancel", OkText = "Set" });
+            }
+            //UserDialogs.Instance.ShowLoading("test", MaskType.Gradient);
+            //UserDialogs.Instance.Confirm(new ConfirmConfig { Title = "Title", Message = "Message", OkText = "ok", CancelText = "cancel" });
+            //UserDialogs.Instance.Login(new LoginConfig { Title = "Title", CancelText = "Cancel", LoginPlaceholder = "l place", PasswordPlaceholder = "p place" });
             customerList.ItemsSource = _customers;
             if (_customers.Count == 0)
             {
@@ -57,16 +72,19 @@ namespace Contacts
             var _c = (sender as MenuItem).CommandParameter as Customer;
             if (await DisplayAlert("Warning", $"Are you sure you want to delete {_c.FullName}?", "Yes", "No"))
             {
-                var response = await App.CustomerManager.DeleteTaskAsync(_c);
-                if (response.StatusCode == HttpStatusCode.OK)
+                using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Gradient))
                 {
-                    // success
-                    DependencyService.Get<IMessage>().ShortAlert("Customer Deleted");
-                    _customers.Remove(_c);
-                }
-                else
-                {
-                    await DisplayAlert("Error", await response.Content.ReadAsStringAsync(), "OK");
+                    var response = await App.CustomerManager.DeleteTaskAsync(_c);
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        // success
+                        DependencyService.Get<IMessage>().ShortAlert("Customer Deleted");
+                        _customers.Remove(_c);
+                    }
+                    else
+                    {
+                        await DisplayAlert("Error", await response.Content.ReadAsStringAsync(), "OK");
+                    }
                 }
             }
         }

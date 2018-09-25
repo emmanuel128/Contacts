@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Contacts.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TodoREST;
 
 namespace Contacts.Data
