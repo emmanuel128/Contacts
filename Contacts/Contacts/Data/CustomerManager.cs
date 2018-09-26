@@ -20,7 +20,7 @@ namespace Contacts.Data
 			return restService.RefreshDataAsync ();	
 		}
 
-        public Task<Customer> GetByIdTaskAsync(string id)
+        public Task<Customer> GetByIdTaskAsync(object id)
         {
             return restService.GetCustomerById(id);
         }

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Contacts.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TodoREST;
 
 namespace Contacts.Data
 {
@@ -44,7 +43,7 @@ namespace Contacts.Data
 			return Customers;
 		}
 
-        public async Task<Customer> GetCustomerById(string customerId)
+        public async Task<Customer> GetCustomerById(object customerId)
         {
             Customer = new Customer();
 
@@ -96,7 +95,7 @@ namespace Contacts.Data
 			}
 		}
 
-		public async Task<HttpResponseMessage> DeleteTodoItemAsync (string id)
+		public async Task<HttpResponseMessage> DeleteTodoItemAsync (object id)
 		{
 			// RestUrl = http://developer.xamarin.com:8081/api/todoitems/{0}
 			var uri = new Uri (string.Format (Constants.RestUrl, id));

@@ -29,24 +29,20 @@ namespace Contacts
             using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Gradient))
             {
                 _customers = new ObservableCollection<Customer>(await App.CustomerManager.GetTasksAsync());
+                //await Task.Delay(3000);
                 var config = new ToastConfig("Finished")
                 {
                     Duration = TimeSpan.FromSeconds(2.5),
                     Message = "Get customers",
                     BackgroundColor = Color.DimGray
                 };
-                UserDialogs.Instance.Toast(config);
-                //var date = await UserDialogs.Instance.DatePromptAsync(new DatePromptConfig() { Title = "Select Date", CancelText = "Cancel", OkText = "Set" });
+                //UserDialogs.Instance.Toast(config);
             }
-            //UserDialogs.Instance.ShowLoading("test", MaskType.Gradient);
-            //UserDialogs.Instance.Confirm(new ConfirmConfig { Title = "Title", Message = "Message", OkText = "ok", CancelText = "cancel" });
-            //UserDialogs.Instance.Login(new LoginConfig { Title = "Title", CancelText = "Cancel", LoginPlaceholder = "l place", PasswordPlaceholder = "p place" });
             customerList.ItemsSource = _customers;
             if (_customers.Count == 0)
             {
                 DependencyService.Get<IMessage>().ShortAlert("No Customer Found");
             }
-            //await DisplayAlert("Acabó", $"Ya llamé al API y este es el primer récord {_customers[0].FullName}", "OK");
         }
 
         async private void CustomerList_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -87,6 +83,16 @@ namespace Contacts
                     }
                 }
             }
+        }
+
+        private void Term_SearchButtonPressed(object sender, EventArgs e)
+        {
+            customerList.ItemsSource = _customers.Where(w => w.FullName.ToUpper().Contains(term.Text.ToUpper()));
+        }
+
+        private void Term_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            customerList.ItemsSource = _customers.Where(w => w.FullName.ToUpper().Contains(e.NewTextValue.ToUpper()));
         }
     }
 }

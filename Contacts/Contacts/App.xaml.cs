@@ -16,7 +16,8 @@ namespace Contacts
 		{
 			InitializeComponent();
             CustomerManager = new CustomerManager(new RestService());
-            MainPage = new NavigationPage(new MainPage());
+            //MainPage = new NavigationPage(new MainPage());
+            MainPage = new MainDrawer();
         }
 
         protected override void OnStart ()

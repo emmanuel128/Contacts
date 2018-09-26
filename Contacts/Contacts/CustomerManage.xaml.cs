@@ -16,7 +16,7 @@ namespace Contacts
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class CustomerManage : ContentPage
 	{
-        private string customerId = string.Empty;
+        private object customerId = string.Empty;
         private string title = "New Customer";
 
 		public CustomerManage (Customer customer)
@@ -37,7 +37,7 @@ namespace Contacts
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            if (!string.IsNullOrWhiteSpace(customerId))
+            if (!string.IsNullOrWhiteSpace(customerId.ToString()))
             {
                 using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Gradient))
                 {
@@ -54,8 +54,8 @@ namespace Contacts
             var _customer = BindingContext as Customer;
             using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Gradient))
             {
-                var response = await App.CustomerManager.SaveTaskAsync(_customer, string.IsNullOrWhiteSpace(customerId));
-                if (response.StatusCode == HttpStatusCode.OK)
+                var response = await App.CustomerManager.SaveTaskAsync(_customer, string.IsNullOrWhiteSpace(customerId.ToString()));
+                if (response.IsSuccessStatusCode)
                 {
                     // success
                     DependencyService.Get<IMessage>().ShortAlert("Customer Updated");

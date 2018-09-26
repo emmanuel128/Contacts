@@ -9,10 +9,10 @@ namespace Contacts.Data
 	{
 		Task<List<Customer>> RefreshDataAsync ();
 
-		Task<Customer> GetCustomerById (string customerId);
+		Task<Customer> GetCustomerById (object customerId);
 
         Task<HttpResponseMessage> SaveCustomerAsync (Customer customer, bool isNewItem);
 
-		Task<HttpResponseMessage> DeleteTodoItemAsync (string id);
+		Task<HttpResponseMessage> DeleteTodoItemAsync (object id);
 	}
 }

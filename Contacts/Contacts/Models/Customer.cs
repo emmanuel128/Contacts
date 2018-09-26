@@ -16,7 +16,7 @@ namespace Contacts.Models
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
-        public string CustomerID { get; set; }
+        public object CustomerID { get; set; }
         public string FullName { get { return $"{FirstName} {LastName}"; } }
     }
 }
