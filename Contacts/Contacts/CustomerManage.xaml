@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Contacts.CustomerManage"
+             Title="{Binding title}">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <TableView Intent="Form">
+                    <TableRoot>
+                        <TableSection Title="Name">
+                            <EntryCell Label="First Name" Placeholder="" Text="{Binding FirstName}"/>
+                            <EntryCell Label="Initial" Placeholder="" Text="{Binding Initial}"/>
+                            <EntryCell Label="Last Name" Placeholder="" Text="{Binding LastName}"/>
+                        </TableSection>
+                        <TableSection Title="Contact">
+                            <EntryCell Label="Email" Keyboard="Email" Placeholder="" Text="{Binding Email}"/>
+                            <EntryCell Label="Phone" Keyboard="Telephone" Placeholder="" Text="{Binding Phone}"/>
+                        </TableSection>
+                        <TableSection Title="Address">
+                            <EntryCell Label="Street Address" Placeholder="" Text="{Binding Address}"/>
+                            <EntryCell Label="City" Placeholder="" Text="{Binding City}"/>
+                            <EntryCell Label="State" Placeholder="" Text="{Binding State}"/>
+                            <EntryCell Label="Zipcode" Placeholder="" Text="{Binding ZipCode}"/>
+                        </TableSection>
+                    </TableRoot>
+                </TableView>
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Save" x:Name="saveBtn" Pressed="SaveBtn_Pressed"></Button>
+                    <Button Text="Delete" x:Name="deleteBtn" Pressed="DeleteBtn_Pressed"></Button>
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
